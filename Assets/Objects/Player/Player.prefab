@@ -197,8 +197,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 300
-  jumpForce: 250
-  maxSpeed: 100
+  jumpForce: 200
+  shortJumpForce: 75
+  maxSpeed: 300
   isOnGround: 1
 --- !u!1 &3474162203729758388
 GameObject:

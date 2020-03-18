@@ -6,9 +6,10 @@ public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
     private Rigidbody2D body;
-    public float movementSpeed = 10.0f;
-    public float jumpForce = 10.0f;
-    public float maxSpeed = 50.0f;
+    public float movementSpeed = 300.0f;
+    public float jumpForce = 200.0f;
+    public float shortJumpForce = 100.0f;
+    public float maxSpeed = 300.0f;
     public bool isOnGround = true;
     private Transform startPosition;
     void Start() {
@@ -18,20 +19,23 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if(Input.GetKeyDown(KeyCode.R)) {
-            Debug.Log("YEET");
-            transform.SetPositionAndRotation(startPosition.position, Quaternion.identity);
-        }
-
     }
 
     public void FixedUpdate() {
         if(body.velocity.magnitude < maxSpeed) body.AddForce(new Vector2(Input.GetAxis("Horizontal")*body.mass,0.0f)*Time.fixedDeltaTime*movementSpeed);
+    //    body.velocity = new Vector2(Input.GetAxis("Horizontal")*movementSpeed, body.velocity.y*body.gravityScale)*Time.fixedDeltaTime;
 
         if(Input.GetButtonDown("Jump") && isOnGround) {
-            body.AddForce(new Vector2(0.0f, 1.0f*jumpForce*body.mass)*Time.fixedDeltaTime, ForceMode2D.Impulse);
+            // Vector2 newJumpForce = new Vector2(0.0f, 1.0f*jumpForce)*Time.fixedDeltaTime;
+            // if(newJumpForce.y > maxSpeed) newJumpForce = new Vector2(0.0f, maxSpeed);
+            // body.AddForce(newJumpForce, ForceMode2D.Impulse);
+            body.velocity = new Vector2(body.velocity.x, jumpForce)*Time.fixedDeltaTime;
+            Debug.Log("JUMP"+body.velocity);
             isOnGround = false;
-        } 
+        } else if(Input.GetButtonUp("Jump") && Vector2.Dot(body.velocity, Vector2.up)>0 && Vector2.Dot(body.velocity, Vector2.up) <= jumpForce) {
+            body.velocity = new Vector2(body.velocity.x, shortJumpForce)*Time.fixedDeltaTime;
+            Debug.Log("SHORT JUMP"+body.velocity);
+        }
         // if (Input.GetButtonUp("Jump") && Vector2.Dot(body.velocity, Vector2.up)>0 && !isOnGround) {
         //     body.AddForce(Vector2.down*(jumpForce/2)*body.mass, ForceMode2D.Impulse);
         //     isOnGround = false;
