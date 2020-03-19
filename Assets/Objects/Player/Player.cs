@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -14,12 +15,20 @@ public class Player : MonoBehaviour
     public bool isOnGround = true;
     public GameObject projectile;
     private Vector2 projectileOffset;
+    private float shootCoolDown = 0.58f;
+    private bool jump = false;
+
     void Start() {
         body = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update() {
+        //for some reason this solves timing issues with jump (Is it Due to the Faster Update Call?)
+        if(Input.GetButtonDown("Jump") && isOnGround) {
+            jump = true;
+        }
+         shootCoolDown -= Time.deltaTime;
     }
 
     public void FixedUpdate() {
@@ -29,20 +38,18 @@ public class Player : MonoBehaviour
         //calc projectile offset
         if(body.velocity.x<0) projectileOffset = Vector2.left*0.32f;
         else if(body.velocity.x>0) projectileOffset = Vector2.right*0.32f;
-
-        Debug.Log("Projectile Offset: "+projectileOffset);
-
-        if(Input.GetButtonDown("Jump") && isOnGround) {
+        
+        if(jump) {
             body.velocity = new Vector2(body.velocity.x, jumpForce)*Time.fixedDeltaTime;
-            Debug.Log("JUMP"+body.velocity);
             isOnGround = false;
-        } else if(Input.GetButtonUp("Jump") && Vector2.Dot(body.velocity, Vector2.up)>0 && Vector2.Dot(body.velocity, Vector2.up) <= jumpForce) {
+            jump = false;
+        } else if(Input.GetButtonUp("Jump") && Vector2.Dot(body.velocity, Vector2.up)>0) {
             body.velocity = new Vector2(body.velocity.x, shortJumpForce)*Time.fixedDeltaTime;
-            Debug.Log("SHORT JUMP"+body.velocity);
         }
 
-        if(Input.GetButtonDown("Shoot")) {
+        if(Input.GetButton("Shoot") && shootCoolDown <= 0.0f) {
             shoot();
+            shootCoolDown = 0.58f;
         }
 
         Collider2D c = Physics2D.OverlapArea(
@@ -59,8 +66,9 @@ public class Player : MonoBehaviour
 
     public void shoot() {
         GameObject spawned = Instantiate(projectile);
+        spawned.tag = "PlayerProjectile";
         spawned.transform.position = new Vector2(transform.position.x+projectileOffset.x, transform.position.y);
-        spawned.GetComponent<Bullet>().OnFired(Mathf.Sign(projectileOffset.x));
+        spawned.GetComponent<Bullet>().OnFired(new Vector2(Mathf.Sign(projectileOffset.x), 0.0f));
     }
 
     public void takeDamage(int value) {
@@ -69,7 +77,8 @@ public class Player : MonoBehaviour
     }
 
     public void die() {
-        Debug.Log("Player Died");
+        FindObjectOfType<GameState>().deaths++;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void OnCollisionStay2D(Collision2D collision) {

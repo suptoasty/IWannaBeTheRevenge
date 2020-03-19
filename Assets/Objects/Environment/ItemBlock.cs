@@ -11,17 +11,6 @@ public class ItemBlock : BonkHandler
     public Sprite emptyBlock = null;
     public bool suprisePhysics = false;
     public float gravityScale = 0.5f;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     void OnCollisionEnter2D(Collision2D collision) {
         if(Regex.IsMatch(collision.gameObject.name, "ItemBlock*", RegexOptions.IgnoreCase)) return;
@@ -44,6 +33,8 @@ public class ItemBlock : BonkHandler
         if(dispensedItems < maxDispensedItems) {
             dispensedItems++;
             GameObject spawned = Instantiate(itemToSpawn);
+            spawned.transform.position = new Vector2(transform.position.x, transform.position.y+1.0f);
+            Debug.Log(spawned.name+": "+spawned.transform.position);
         }
         if(emptyBlock) GetComponent<SpriteRenderer>().sprite = emptyBlock;
     }

@@ -6,9 +6,11 @@ using UnityEngine.SceneManagement;
 public class DeathBox : MonoBehaviour
 {
     public void OnTriggerEnter2D(Collider2D collision) {
-        Debug.Log(collision.gameObject.name);
+        Debug.Log("{{{{{{");
         if(collision.gameObject.name == "Player") {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+            Debug.Log("Player Died");
+            Player player = collision.gameObject.GetComponent<Player>() as Player;
+            player.die();
         }
     }
 }

@@ -196,11 +196,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc422321ecd6c448bf79da54012784f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 3
   movementSpeed: 300
   jumpForce: 200
   shortJumpForce: 75
   maxSpeed: 300
   isOnGround: 1
+  projectile: {fileID: 3419503560999253893, guid: b3e43c1795bc3d843ace324a95886850,
+    type: 3}
 --- !u!1 &3474162203729758388
 GameObject:
   m_ObjectHideFlags: 0
