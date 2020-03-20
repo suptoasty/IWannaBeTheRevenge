@@ -3042,6 +3042,11 @@ PrefabInstance:
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[1].Array.data[19].Y
       value: -20799961
       objectReference: {fileID: 0}
+    - target: {fileID: 8063398833135717533, guid: a9a43a64629c90843be49dba0e53e506,
+        type: 3}
+      propertyPath: m_EdgeRadius
+      value: 0.025
+      objectReference: {fileID: 0}
     - target: {fileID: 8063398833135717534, guid: a9a43a64629c90843be49dba0e53e506,
         type: 3}
       propertyPath: m_Tiles.Array.size

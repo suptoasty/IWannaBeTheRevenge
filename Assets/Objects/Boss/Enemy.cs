@@ -7,14 +7,22 @@ public class Enemy : MonoBehaviour
     public int health = 3;
     public int damage = 1;
     public GameObject projectile;
+    public float shootCooldown = 0.58f;
+
+    public void Update() {
+        shootCooldown -= Time.deltaTime;
+    }
 
     public void FixedUpdate() {
-        int rand = Mathf.RoundToInt(Random.Range(0.0f, Mathf.Infinity));
-        if(rand%3==1) {
+        int rand = Mathf.RoundToInt(Random.Range(0.0f, 100.0f));
+        if(rand%2==0) {
             move(); 
-        } else if(rand%3==0) {
+        } 
+        if(shootCooldown<=0.0f) {
             shoot();
+            shootCooldown = 0.58f;
         }
+
     }
 
     public void move() {
@@ -24,6 +32,7 @@ public class Enemy : MonoBehaviour
         Vector2 direction = new Vector2(Random.Range(-180, 180), Random.Range(-180, 180));
         GameObject spawned = Instantiate(projectile);
         spawned.tag = "EnemyProjectile";
+        spawned.transform.position = transform.position;
         spawned.GetComponent<Bullet>().OnFired(new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)));
         spawned.transform.rotation = Random.rotation;
     }
@@ -36,8 +45,8 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void OnCollisionEnter2D(Collision2D collider) {
-        if(collider.gameObject.name == "Player") {
+    public void OnTriggerEnter2D(Collider2D collider) {
+        if(collider.gameObject.tag == "Player") {
             Player player = collider.gameObject.GetComponent<Player>();
             player.takeDamage(damage);
         }
